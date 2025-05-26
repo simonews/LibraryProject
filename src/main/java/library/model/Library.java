@@ -83,13 +83,66 @@ public class Library {
         return result;
     }
 
-    public List<Book> filterByYear(int year){
-        List<Book> result =  new ArrayList<>();
-        for(Book book: books){
-            if(book.getYear() == year) result.add(book);
+    public List<Book> filterBooksBy(String crit, String valore){
+        List<Book> filtered = new ArrayList<>();
+        for (Book b : books) {
+            switch (crit.toLowerCase()) {
+                case "autore":
+                    if (b.getAuthor().equalsIgnoreCase(valore)) {
+                        filtered.add(b);
+                    }
+                    break;
+                case "anno":
+                    try {
+                        int year = Integer.parseInt(valore);
+                        if (b.getYear() == year) {
+                            filtered.add(b);
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Anno non valido");
+                    }
+                    break;
+                case "titolo":
+                    if (b.getTitle().equalsIgnoreCase(valore)) {
+                        filtered.add(b);
+                    }
+                    break;
+                default:
+                    System.out.println("Criterio di filtro non riconosciuto");
+            }
+        }
+        return filtered;
+    }
+
+    public void getBooksSortBy(String crit){
+        for (int i = 0; i < books.size()-1; i++) {
+            for (int j = i+1; j < books.size(); j++) {
+                Book a = books.get(i);
+                Book b = books.get(j);
+
+                boolean swap = false;
+
+                switch(crit.toLowerCase()) {
+                    case "titolo":
+                        if(a.getTitle().compareToIgnoreCase(b.getTitle()) > 0) swap = true;
+                        break;
+                    case "autore":
+                        if(a.getAuthor().compareToIgnoreCase(b.getAuthor()) > 0) swap = true;
+                        break;
+                    case "anno":
+                        if(a.getYear() > b.getYear()) swap = true;
+                        break;
+                }
+
+                if (swap){
+                    books.set(i,b);
+                    books.set(j,a);
+                }
+            }
         }
 
-        return result;
+        System.out.println("Libri ordinati per: "+ crit);
+
     }
 
     public List<Book> getAllBooks() {
