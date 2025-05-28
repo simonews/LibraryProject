@@ -9,11 +9,24 @@ import java.util.List;
 
 public class LibraryStorage {
 
+    private static LibraryStorage instance;
     private static final Gson gson = new Gson();
+    private LibraryStorage() {}
+
+
+    public static LibraryStorage getInstance() {
+        if (instance == null) {
+            instance = new LibraryStorage();
+        }
+        return instance;
+    }
 
     public static void saveToFile(List<Book> books, String filepath) throws IOException {
         try (Writer writer = new FileWriter(filepath)) {
             gson.toJson(books, writer);
+        }
+        catch (IOException e){
+            System.err.println("Errore durante il salvataggio: " + e.getMessage());
         }
     }
 
@@ -21,6 +34,10 @@ public class LibraryStorage {
         try (Reader reader =new FileReader(filepath)) {
             Type bookListType = new TypeToken<List<Book>>(){}.getType();
             return gson.fromJson(reader, bookListType);
+        }
+        catch (IOException e){
+            System.err.println("Errore durante il caricamento: " + e.getMessage());
+            return null;
         }
     }
 }
