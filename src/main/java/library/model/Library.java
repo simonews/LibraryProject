@@ -1,11 +1,26 @@
 package main.java.library.model;
 
+import main.java.library.util.SortStrategy;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Library {
-    private final List<Book> books = new ArrayList<>();
-    private int nextIndex = 0;
+    private static Library instance;
+    private List<Book> books;
+    private int nextIndex;
+
+    private Library() {
+        books = new ArrayList<>();
+        nextIndex = 0;
+    }
+
+    public static Library getInstance(){
+        if (instance == null) {
+            instance = new Library();
+        }
+        return instance;
+    }
 
     public boolean addBook(String title, String author, String genre, int year, String isbn, String description){
         if(!isValidIsbn(isbn)){
@@ -114,35 +129,9 @@ public class Library {
         return filtered;
     }
 
-    public void getBooksSortBy(String crit){
-        for (int i = 0; i < books.size()-1; i++) {
-            for (int j = i+1; j < books.size(); j++) {
-                Book a = books.get(i);
-                Book b = books.get(j);
-
-                boolean swap = false;
-
-                switch(crit.toLowerCase()) {
-                    case "titolo":
-                        if(a.getTitle().compareToIgnoreCase(b.getTitle()) > 0) swap = true;
-                        break;
-                    case "autore":
-                        if(a.getAuthor().compareToIgnoreCase(b.getAuthor()) > 0) swap = true;
-                        break;
-                    case "anno":
-                        if(a.getYear() > b.getYear()) swap = true;
-                        break;
-                }
-
-                if (swap){
-                    books.set(i,b);
-                    books.set(j,a);
-                }
-            }
-        }
-
-        System.out.println("Libri ordinati per: "+ crit);
-
+    public void getBooksSortBy(SortStrategy strategy){
+        strategy.sort(books);
+        System.out.println("Libri ordinati con strategia: " + strategy.getClass().getSimpleName());
     }
 
     public List<Book> getAllBooks() {
