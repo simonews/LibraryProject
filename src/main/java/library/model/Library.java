@@ -152,4 +152,12 @@ public class Library {
         return cleanIsbn.matches("^(?:\\d{10}|\\d{13})$\n");
     }
 
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
+    }
+
 }

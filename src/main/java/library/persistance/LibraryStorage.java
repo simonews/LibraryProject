@@ -11,8 +11,8 @@ public class LibraryStorage {
 
     private static LibraryStorage instance;
     private static final Gson gson = new Gson();
-    private LibraryStorage() {}
 
+    private LibraryStorage() {}
 
     public static LibraryStorage getInstance() {
         if (instance == null) {
@@ -21,12 +21,14 @@ public class LibraryStorage {
         return instance;
     }
 
-    public static void saveToFile(List<Book> books, String filepath) throws IOException {
+    public static boolean saveToFile(List<Book> books, String filepath) throws IOException {
         try (Writer writer = new FileWriter(filepath)) {
             gson.toJson(books, writer);
+            return true;
         }
         catch (IOException e){
             System.err.println("Errore durante il salvataggio: " + e.getMessage());
+            return false;
         }
     }
 
