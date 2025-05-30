@@ -8,7 +8,7 @@ import java.util.List;
 public class Library {
     private static Library instance;
     private List<Book> books;
-    private int nextIndex;
+    private int nextIndex = -1;
 
     private Library() {
         books = new ArrayList<>();
@@ -22,17 +22,17 @@ public class Library {
         return instance;
     }
 
-    public boolean addBook(String title, String author, String genre, int year, String isbn, String description){
-        if(!isValidIsbn(isbn)){
+    public boolean addBook(Book book){
+        if(!isValidIsbn(book.getIsbn())){
             throw new IllegalArgumentException("ISBN non valido");
         }
 
-        for (Book book : books) {
-            if(book.getIsbn().equalsIgnoreCase(isbn))
+        for (Book b : books) {
+            if(b.getId() != book.getId() && book.getIsbn().equalsIgnoreCase(b.getIsbn()))
                 throw new IllegalArgumentException("Esiste già un libro con questo ISBN");
         }
 
-        Book book = new Book(nextIndex++, title, author, genre, year, isbn, description);
+        book.setId(nextIndex++);
         books.add(book);
         return true;
     }
@@ -149,7 +149,8 @@ public class Library {
         if (isbn == null) return false;
         String cleanIsbn = isbn.replaceAll("[\\s-]","");
 
-        return cleanIsbn.matches("^(?:\\d{10}|\\d{13})$\n");
+        return cleanIsbn.matches("^(?:\\d{10}|\\d{13})$");
+
     }
 
     public List<Book> getBooks() {
