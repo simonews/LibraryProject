@@ -3,7 +3,7 @@ package main.java.library.model;
 import java.util.Objects;
 
 public class Book {
-    private int id;
+    private int id = -1;
     private String title;
     private String author;
     private String genre;
@@ -11,8 +11,7 @@ public class Book {
     private String isbn;
     private String description;
 
-    public Book(int id, String title, String author, String genre, int year, String isbn, String description){
-        this.id = id;
+    public Book(String title, String author, String genre, int year, String isbn, String description){
         this.title = title;
         this.author = author;
         this.genre = genre;
