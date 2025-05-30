@@ -17,7 +17,7 @@ public class LibraryTest {
 
     @Test
     public void testAddBook() {
-        Book book = new Book(0, "titolo", "autore", "thriller", 2010, "1234567890", "yes thanks good book");
+        Book book = new Book("titolo", "autore", "thriller", 2010, "1234567890", "yes thanks good book");
         boolean res = library.addBook(book);
         assertTrue(res);
         assertEquals(1, library.getBooks().size());
@@ -25,8 +25,8 @@ public class LibraryTest {
 
     @Test
     public void testDuplicateIsbnAdded(){
-        Book b1 = new Book(0, "tt", "aa", "tt", 2010, "1234567890", "abc");
-        Book b2 = new Book(0, "t2", "aa", "tt", 2011, "1234567890", "abc");
+        Book b1 = new Book("tt", "aa", "tt", 2010, "1234567890", "abc");
+        Book b2 = new Book("t2", "aa", "tt", 2011, "1234567890", "abc");
         library.addBook(b1);
         boolean res = library.addBook(b2);
         assertFalse(res);
