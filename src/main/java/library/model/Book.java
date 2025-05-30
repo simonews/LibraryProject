@@ -3,7 +3,7 @@ package main.java.library.model;
 import java.util.Objects;
 
 public class Book {
-    private final int id;
+    private int id;
     private String title;
     private String author;
     private String genre;
@@ -23,6 +23,10 @@ public class Book {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int x) {
+        this.id = x;
     }
 
     public String getTitle() {

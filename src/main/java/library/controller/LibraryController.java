@@ -18,8 +18,8 @@ public class LibraryController {
         this.storage = LibraryStorage.getInstance();
     }
 
-    public boolean addBook(String title, String author,String genre, String isbn, int year, String description){
-        return library.addBook(title, author, genre, year, isbn, description);
+    public boolean addBook(Book book){
+        return library.addBook(book);
     }
 
     public boolean removeBook(int id){
