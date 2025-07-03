@@ -28,7 +28,7 @@ public class Library {
         }
 
         for (Book b : books) {
-            if(b.getId() != book.getId() && book.getIsbn().equalsIgnoreCase(b.getIsbn()))
+            if((b.getId() != book.getId()) && (book.getIsbn().equalsIgnoreCase(b.getIsbn())))
                 throw new IllegalArgumentException("Esiste già un libro con questo ISBN");
         }
 
