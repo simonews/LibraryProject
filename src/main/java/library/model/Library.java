@@ -9,9 +9,11 @@ public class Library {
     private static Library instance;
     private List<Book> books;
     private int nextIndex = -1;
+    private List<LibraryObserver> observers;
 
     private Library() {
         books = new ArrayList<>();
+        observers = new ArrayList<>();
         nextIndex = 0;
     }
 
@@ -20,6 +22,20 @@ public class Library {
             instance = new Library();
         }
         return instance;
+    }
+
+    public void addObserver(LibraryObserver observer){
+        observers.add(observer);
+    }
+
+    public void removeObserver(LibraryObserver observer){
+        observers.remove(observer);
+    }
+
+    public void notifyObservers() {
+        for(LibraryObserver o:observers){
+            o.onLibraryChanged(new ArrayList<>(books));
+        }
     }
 
     public boolean addBook(Book book){
@@ -34,6 +50,7 @@ public class Library {
 
         book.setId(nextIndex++);
         books.add(book);
+        notifyObservers();
         return true;
     }
 
@@ -44,6 +61,7 @@ public class Library {
                 return true;
             }
         }
+        notifyObservers();
         return false;
     }
 
@@ -64,6 +82,7 @@ public class Library {
                 book.setIsbn(newIsbn);
                 book.setGenre(newGenre);
                 book.setYear(year);
+                notifyObservers();
                 return true;
 
             }
@@ -159,6 +178,7 @@ public class Library {
 
     public void setBooks(List<Book> books) {
         this.books = books;
+        notifyObservers();
     }
 
 }
