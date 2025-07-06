@@ -2,6 +2,7 @@ package main.java.library.controller;
 
 import main.java.library.model.Book;
 import main.java.library.model.Library;
+import main.java.library.model.LibraryObserver;
 import main.java.library.persistance.LibraryStorage;
 import main.java.library.util.SortStrategy;
 
@@ -26,6 +27,26 @@ public class LibraryController {
         return library.removeBookById(id);
     }
 
+    public boolean removeBookByIsbn(String isbn){
+        return library.removeBookByISBN(isbn);
+    }
+
+    public boolean updateBook(int id, Book updatedBook) {
+        return library.modifyBook(
+                id,
+                updatedBook.getTitle(),
+                updatedBook.getAuthor(),
+                updatedBook.getIsbn(),
+                updatedBook.getDescription(),
+                updatedBook.getYear(),
+                updatedBook.getGenre()
+        );
+    }
+
+    public Book getBookByISBN(String isbn){
+        return library.getBookByIsbn(isbn);
+    }
+
     public void sortBooks(SortStrategy str){
         library.getBooksSortBy(str);
     }
@@ -46,5 +67,9 @@ public class LibraryController {
 
     public List<Book> getAllBooks(){
         return library.getBooks();
+    }
+
+    public void addObserver(LibraryObserver observer){
+        library.addObserver(observer);
     }
 }
