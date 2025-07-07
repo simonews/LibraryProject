@@ -58,11 +58,23 @@ public class Library {
         for (int i = 0; i < books.size(); i++) {
             if(books.get(i).getId() == id) {
                 books.remove(i);
+                notifyObservers();
                 return true;
             }
         }
         notifyObservers();
         return false;
+    }
+
+    public boolean removeBookByISBN(String isbn){
+        for(Book book: books){
+            if(book.getIsbn().equalsIgnoreCase(isbn)) {
+                books.remove(book);
+                notifyObservers();
+                return true;
+            }
+            notifyObservers();
+        }return false;
     }
 
     public boolean modifyBook(int id, String newTitle, String newAuthor, String newIsbn, String newDescription, int year, String newGenre){
@@ -141,6 +153,10 @@ public class Library {
                         filtered.add(b);
                     }
                     break;
+                case "genere":
+                    if(b.getGenre().equalsIgnoreCase(valore)) {
+                        filtered.add(b);
+                    }
                 default:
                     System.out.println("Criterio di filtro non riconosciuto");
             }
@@ -160,6 +176,13 @@ public class Library {
     public Book getBookById(int id) {
         for (Book book: books){
             if (book.getId() == id) return book;
+        }
+        return null;
+    }
+
+    public Book getBookByIsbn(String isbn){
+        for (Book book: books){
+            if (book.getIsbn().equals(isbn)) return book;
         }
         return null;
     }
