@@ -20,19 +20,26 @@ public class LibraryController {
     }
 
     public boolean addBook(Book book){
-        return library.addBook(book);
+        boolean result = library.addBook(book);
+        if (result) autoSave();
+        return result;
+
     }
 
     public boolean removeBook(int id){
-        return library.removeBookById(id);
+        boolean result =  library.removeBookById(id);
+        if (result) autoSave();
+        return result;
     }
 
     public boolean removeBookByIsbn(String isbn){
-        return library.removeBookByISBN(isbn);
+        boolean result = library.removeBookByISBN(isbn);
+        if (result) autoSave();
+        return result;
     }
 
     public boolean updateBook(int id, Book updatedBook) {
-        return library.modifyBook(
+        boolean result = library.modifyBook(
                 id,
                 updatedBook.getTitle(),
                 updatedBook.getAuthor(),
@@ -41,6 +48,8 @@ public class LibraryController {
                 updatedBook.getYear(),
                 updatedBook.getGenre()
         );
+        if (result) autoSave();
+        return result;
     }
 
     public Book getBookByISBN(String isbn){
@@ -57,6 +66,14 @@ public class LibraryController {
 
     public boolean saveLibrary(String path) throws IOException {
         return storage.saveToFile(library.getAllBooks(), path);
+    }
+
+    public void autoSave() {
+        try {
+            storage.saveToFile(library.getAllBooks(), "books.json");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public List<Book> loadLibrary(String path) throws IOException {

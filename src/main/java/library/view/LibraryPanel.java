@@ -20,7 +20,7 @@ public class LibraryPanel extends JPanel implements LibraryObserver {
     private DefaultTableModel tableModel;
     private LibraryController controller;
     private JTextField searchField;
-    private JComboBox<String> genreFilter;
+    private JComboBox<String> filterCritComboBox;
     private JComboBox<String> sortComboBox;
 
     public LibraryPanel(LibraryController controller){
@@ -38,21 +38,21 @@ public class LibraryPanel extends JPanel implements LibraryObserver {
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         searchField = new JTextField(20);
-        genreFilter = new JComboBox<>();
-        genreFilter.addItem("Tutti");
+        filterCritComboBox = new JComboBox<>((new String[]{"Tutti", "Titolo", "Autore", "Genere", "Anno"}));
         sortComboBox = new JComboBox<>(new String[]{"Nessuno", "Titolo", "Autore", "Anno"});
-        controller.getAllBooks().stream()
-                .map(Book::getGenre)
-                .distinct()
-                .forEach(genreFilter::addItem);
 
         topPanel.add(new JLabel("Cerca:"));
         topPanel.add(searchField);
-        topPanel.add(new JLabel("Genere:"));
-        topPanel.add(genreFilter);
+        topPanel.add(new JLabel("Filtra per:"));
+        topPanel.add(filterCritComboBox);
         topPanel.add(new JLabel("Ordina per:"));
         topPanel.add(sortComboBox);
+
+        filterCritComboBox.addActionListener(e -> filtra());
+
         add(topPanel, BorderLayout.NORTH);
+
+
 
         //pannello pulsanti add/edit/delete
         JPanel buttonPanel = new JPanel(new FlowLayout());
@@ -154,19 +154,26 @@ public class LibraryPanel extends JPanel implements LibraryObserver {
 
     private void filtra() {
         String testo = searchField.getText().trim().toLowerCase();
-        String genere = (String) genreFilter.getSelectedItem();
+        String criterioFiltro = (String) filterCritComboBox.getSelectedItem();
         String criterioOrdine = (String) sortComboBox.getSelectedItem();
 
         List<Book> filtrati = controller.getAllBooks();
 
         if (!testo.isEmpty()) {
-            filtrati = filtrati.stream()
-                    .filter(b -> b.getTitle().toLowerCase().contains(testo) || b.getAuthor().toLowerCase().contains(testo)).collect(Collectors.toList());
+            filtrati = filtrati.stream().filter(book -> {
+                switch (criterioFiltro) {
+                    case "Titolo": return book.getTitle().toLowerCase().contains(testo);
+                    case "Autore": return book.getAuthor().toLowerCase().contains(testo);
+                    case "Genere": return book.getGenre().toLowerCase().contains(testo);
+                    case "Anno": return String.valueOf(book.getYear()).contains(testo);
+                    default: return book.getTitle().toLowerCase().contains(testo)
+                            || book.getAuthor().toLowerCase().contains(testo)
+                            || book.getGenre().toLowerCase().contains(testo)
+                            || String.valueOf(book.getYear()).contains(testo);
+                }
+            }).collect(Collectors.toList());
         }
 
-        if (!genere.equalsIgnoreCase("Tutti")) {
-            filtrati = filtrati.stream().filter(b -> b.getGenre().equalsIgnoreCase(genere)).collect(Collectors.toList());
-        }
 
         switch (criterioOrdine) {
             case "Titolo":
@@ -185,15 +192,8 @@ public class LibraryPanel extends JPanel implements LibraryObserver {
         refreshTable(filtrati);
     }
 
-    private void aggiornaGeneri(List<Book> books) {
-        genreFilter.removeAllItems();
-        genreFilter.addItem("Tutti");
-        books.stream().map(Book::getGenre).distinct().sorted().forEach(genreFilter::addItem);
-    }
-
     @Override
     public void onLibraryChanged(List<Book> updatedBooks) {
-        aggiornaGeneri(updatedBooks);
         refreshTable(updatedBooks);
     }
 }
