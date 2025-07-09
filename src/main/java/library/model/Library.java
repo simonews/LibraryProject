@@ -1,5 +1,7 @@
 package main.java.library.model;
 
+import main.java.library.model.enums.Rating;
+import main.java.library.model.enums.ReadingStatus;
 import main.java.library.util.SortStrategy;
 
 import java.util.ArrayList;
@@ -77,7 +79,7 @@ public class Library {
         }return false;
     }
 
-    public boolean modifyBook(int id, String newTitle, String newAuthor, String newIsbn, String newDescription, int year, String newGenre){
+    public boolean modifyBook(int id, String newTitle, String newAuthor, String newIsbn, String newDescription, int year, String newGenre, Rating newRating, ReadingStatus newStatus){
         for (Book book: books){
             if(book.getId()==id){
                 if(!book.getIsbn().equalsIgnoreCase(newIsbn)){
@@ -94,6 +96,8 @@ public class Library {
                 book.setIsbn(newIsbn);
                 book.setGenre(newGenre);
                 book.setYear(year);
+                book.setRating(newRating);
+                book.setStatus(newStatus);
                 notifyObservers();
                 return true;
 
@@ -155,6 +159,14 @@ public class Library {
                     break;
                 case "genere":
                     if(b.getGenre().equalsIgnoreCase(valore)) {
+                        filtered.add(b);
+                    }
+                case "stato":
+                    if(b.getStatus().getName().equalsIgnoreCase(valore)) {
+                        filtered.add(b);
+                    }
+                case "rating":
+                    if(b.getRating().getValue() == Integer.parseInt(valore)){
                         filtered.add(b);
                     }
                 default:

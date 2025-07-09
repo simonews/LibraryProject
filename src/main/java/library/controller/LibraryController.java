@@ -46,7 +46,9 @@ public class LibraryController {
                 updatedBook.getIsbn(),
                 updatedBook.getDescription(),
                 updatedBook.getYear(),
-                updatedBook.getGenre()
+                updatedBook.getGenre(),
+                updatedBook.getRating(),
+                updatedBook.getStatus()
         );
         if (result) autoSave();
         return result;

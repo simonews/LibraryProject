@@ -2,6 +2,8 @@ package test.java.library.persistance;
 
 import main.java.library.model.Book;
 import main.java.library.model.BookFactory;
+import main.java.library.model.enums.Rating;
+import main.java.library.model.enums.ReadingStatus;
 import main.java.library.persistance.LibraryStorage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,8 +35,8 @@ public class LibraryStorageTest {
     @Test
     void testSaveAndLoadBooks() throws IOException {
         List<Book> bookToSave = new ArrayList<>();
-        Book b1 = BookFactory.createBook("tt", "aa", "tt", 2010, "1234567890", "abc");
-        Book b2 = BookFactory.createBook("t2", "aa", "tt", 2011, "2234567890", "abc");
+        Book b1 = BookFactory.createBook("titolo1", "autore", "thriller", 2010, "1234567890", Rating.DUE, ReadingStatus.DA_LEGGERE, "aaa" );
+        Book b2 = BookFactory.createBook("titolo2", "autore", "thriller", 2010, "1234567891", Rating.DUE, ReadingStatus.DA_LEGGERE, "aaa" );
         bookToSave.add(b1);
         bookToSave.add(b2);
 
@@ -44,7 +46,7 @@ public class LibraryStorageTest {
         assertNotNull(loadedBooks);
         assertEquals(2, loadedBooks.size());
         assertTrue(loadedBooks.stream().anyMatch(b -> b.getIsbn().equals("1234567890")));
-        assertTrue(loadedBooks.stream().anyMatch(b -> b.getIsbn().equals("2234567890")));
+        assertTrue(loadedBooks.stream().anyMatch(b -> b.getIsbn().equals("1234567891")));
 
     }
 

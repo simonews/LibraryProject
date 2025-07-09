@@ -4,6 +4,8 @@ import main.java.library.controller.LibraryController;
 import main.java.library.model.Book;
 import main.java.library.model.BookFactory;
 import main.java.library.model.Library;
+import main.java.library.model.enums.Rating;
+import main.java.library.model.enums.ReadingStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +28,7 @@ public class LibraryTest {
 
     @Test
     public void testAddBook() {
-        Book book = BookFactory.createBook("titolo", "autore", "thriller", 2010, "1234567890", "yes thanks good book");
+        Book book = BookFactory.createBook("titolo", "autore", "thriller", 2010, "1234567890", Rating.DUE, ReadingStatus.DA_LEGGERE, "aaa" );
         boolean res = library.addBook(book);
         assertTrue(res);
         assertEquals(1, library.getBooks().size());
@@ -34,8 +36,8 @@ public class LibraryTest {
 
     @Test
     public void testDuplicateIsbnAdded(){
-        Book b1 = BookFactory.createBook("tt", "aa", "tt", 2010, "1234567890", "abc");
-        Book b2 = BookFactory.createBook("t2", "aa", "tt", 2011, "1234567890", "abc");
+        Book b1 = BookFactory.createBook("titolo1", "autore", "thriller", 2010, "1234567890", Rating.DUE, ReadingStatus.DA_LEGGERE, "aaa" );
+        Book b2 = BookFactory.createBook("titolo2", "autore", "thriller", 2010, "1234567890", Rating.DUE, ReadingStatus.DA_LEGGERE, "aaa" );
         library.addBook(b1);
         boolean res = library.addBook(b2);
         assertFalse(res);
@@ -44,7 +46,7 @@ public class LibraryTest {
 
     @Test
     public void testRemoveBook() {
-        Book book = BookFactory.createBook("Titolo", "Autore", "si", 2020, "1234567890", "Descrizione");
+        Book book = BookFactory.createBook("titolo", "autore", "thriller", 2010, "1234567890", Rating.DUE, ReadingStatus.DA_LEGGERE, "aaa" );
         library.addBook(book);
         int id = book.getId();
         boolean removed = library.removeBookById(id);
@@ -54,8 +56,8 @@ public class LibraryTest {
 
     @Test
     public void testGetAllBooks() {
-        Book b1 = BookFactory.createBook("tt", "aa", "tt", 2010, "1234567890", "abc");
-        Book b2 = BookFactory.createBook("t2", "aa", "tt", 2011, "2234567890", "abc");
+        Book b1 = BookFactory.createBook("titolo1", "autore", "thriller", 2010, "1234567890", Rating.DUE, ReadingStatus.DA_LEGGERE, "aaa" );
+        Book b2 = BookFactory.createBook("titolo2", "autore", "thriller", 2010, "1234567890", Rating.DUE, ReadingStatus.DA_LEGGERE, "aaa" );
         library.addBook(b1);
         library.addBook(b2);
 
@@ -67,14 +69,14 @@ public class LibraryTest {
 
     @Test
     void testFilterBooksByAuthor() {
-        Book b1 = BookFactory.createBook("tt", "andrea", "tt", 2010, "1234567890", "abc");
-        Book b2 = BookFactory.createBook("t2", "michele", "tt", 2011, "2234567890", "abc");
-        Book b3 = BookFactory.createBook("t2", "luca", "tt", 2011, "2334567890", "abc");
+        Book b1 = BookFactory.createBook("titolo1", "a", "thriller", 2010, "1234567891", Rating.DUE, ReadingStatus.DA_LEGGERE, "aaa" );
+        Book b2 = BookFactory.createBook("titolo2", "b", "thriller", 2010, "1234567892", Rating.DUE, ReadingStatus.DA_LEGGERE, "aaa" );
+        Book b3 = BookFactory.createBook("titolo3", "c", "thriller", 2010, "1234567893", Rating.DUE, ReadingStatus.DA_LEGGERE, "aaa" );
         controller.addBook(b1);
         controller.addBook(b2);
         controller.addBook(b3);
 
-        List<Book> filtered = controller.filterBooks("autore", "michele");
+        List<Book> filtered = controller.filterBooks("autore", "a");
         assertEquals(1, filtered.size(), "il filtro per autore non ha restituito il numero corretto di libri");
     }
 }

@@ -2,6 +2,8 @@ package main.java.library.view;
 
 import main.java.library.model.Book;
 import main.java.library.model.BookFactory;
+import main.java.library.model.enums.Rating;
+import main.java.library.model.enums.ReadingStatus;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +14,8 @@ public class BookFormDialog extends JDialog {
     private JTextField genreField;
     private JTextField yearField;
     private JTextField isbnField;
+    private JComboBox<Rating> ratingField;
+    private JComboBox<ReadingStatus> statusField;
     private JTextArea descriptionArea;
     private Book book;
 
@@ -22,12 +26,14 @@ public class BookFormDialog extends JDialog {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        JPanel inputPanel = new JPanel(new GridLayout(6,2,5,5));
+        JPanel inputPanel = new JPanel(new GridLayout(8,2,5,5));
         titleField= new JTextField();
         authorField = new JTextField();
         genreField = new JTextField();
         yearField = new JTextField();
         isbnField = new JTextField();
+        ratingField = new JComboBox<>(Rating.values());
+        statusField = new JComboBox<>(ReadingStatus.values());
         descriptionArea = new JTextArea();
 
         inputPanel.add(new JLabel("Titolo: "));
@@ -40,6 +46,10 @@ public class BookFormDialog extends JDialog {
         inputPanel.add(yearField);
         inputPanel.add(new JLabel("ISBN: "));
         inputPanel.add(isbnField);
+        inputPanel.add(new JLabel("Rating: "));
+        inputPanel.add(ratingField);
+        inputPanel.add(new JLabel("Stato: "));
+        inputPanel.add(statusField);
         inputPanel.add(new JLabel("Descrizione: "));
         inputPanel.add(new JScrollPane(descriptionArea));
 
@@ -48,20 +58,33 @@ public class BookFormDialog extends JDialog {
         //bottoni
         JButton confirmButton = new JButton("Conferma");
         confirmButton.addActionListener(e -> {
-            try {
                 String title = titleField.getText().trim();
                 String author = authorField.getText().trim();
                 String genre = genreField.getText().trim();
-                int year = Integer.parseInt(yearField.getText().trim());
+                String year = yearField.getText().trim();
                 String isbn = isbnField.getText().trim();
+                Rating rating = (Rating) ratingField.getSelectedItem();
+                ReadingStatus status = (ReadingStatus) statusField.getSelectedItem();
                 String description = descriptionArea.getText().trim();
 
-                book = BookFactory.createBook(title, author, genre, year, isbn, description);
-                dispose();
+                if(title.isEmpty() || author.isEmpty() || genre.isEmpty() || year.isEmpty() || isbn.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Tutti i campi (tranne la descrizione) devono essere compilati. ", "Errore.", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
-            } catch (NumberFormatException ex){
-                JOptionPane.showMessageDialog(this, "Anno non valido");
-            }
+                int yearInt;
+                try{
+                    yearInt = Integer.parseInt(year);
+                    if (yearInt < 2025 || yearInt > 2100) {
+                        throw new NumberFormatException("Anno fuori range.");
+                    }
+                    }catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this, "Anno non valido. Inserire un numero tra 2025 e 2100", "Errore." ,JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                book = BookFactory.createBook(title, author, genre, yearInt, isbn,rating,status, description);
+                dispose();
         });
 
         JPanel buttonPanel = new JPanel();
@@ -75,6 +98,8 @@ public class BookFormDialog extends JDialog {
             genreField.setText(bookToEdit.getGenre());
             yearField.setText(String.valueOf(bookToEdit.getYear()));
             isbnField.setText(bookToEdit.getIsbn());
+            ratingField.setSelectedItem(bookToEdit.getRating());
+            statusField.setSelectedItem(bookToEdit.getStatus());
             descriptionArea.setText(bookToEdit.getDescription());
         }
 

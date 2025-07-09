@@ -4,6 +4,7 @@ import main.java.library.controller.LibraryController;
 import main.java.library.model.Book;
 import main.java.library.model.LibraryObserver;
 import main.java.library.util.SortByAuthor;
+import main.java.library.util.SortByRating;
 import main.java.library.util.SortByTitle;
 import main.java.library.util.SortByYear;
 
@@ -28,7 +29,7 @@ public class LibraryPanel extends JPanel implements LibraryObserver {
         setLayout(new BorderLayout());
 
         //colonne
-        String[] columnNames = {"Titolo", "Autore", "Genere", "Anno", "ISBN", "Descrizione"};
+        String[] columnNames = {"Titolo", "Autore", "Genere", "Anno", "ISBN","Rating","Stato","Descrizione"};
         tableModel = new DefaultTableModel(columnNames, 0);
         table = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(table);
@@ -38,8 +39,8 @@ public class LibraryPanel extends JPanel implements LibraryObserver {
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         searchField = new JTextField(20);
-        filterCritComboBox = new JComboBox<>((new String[]{"Tutti", "Titolo", "Autore", "Genere", "Anno"}));
-        sortComboBox = new JComboBox<>(new String[]{"Nessuno", "Titolo", "Autore", "Anno"});
+        filterCritComboBox = new JComboBox<>((new String[]{"Tutti", "Titolo", "Autore", "Genere","Rating","Stato","Anno"}));
+        sortComboBox = new JComboBox<>(new String[]{"Nessuno", "Titolo", "Autore", "Anno","Rating"});
 
         topPanel.add(new JLabel("Cerca:"));
         topPanel.add(searchField);
@@ -130,6 +131,8 @@ public class LibraryPanel extends JPanel implements LibraryObserver {
                 case "Anno":
                     controller.sortBooks(new SortByYear());
                     break;
+                case "Rating":
+                    controller.sortBooks(new SortByRating());
                 default:
                     break;
             }
@@ -147,6 +150,8 @@ public class LibraryPanel extends JPanel implements LibraryObserver {
                 b.getGenre(),
                 b.getYear(),
                 b.getIsbn(),
+                b.getRating().getValue() + " " + "★".repeat(b.getRating().getValue()),
+                b.getStatus().getName(),
                 b.getDescription()
             });
         }
@@ -166,6 +171,8 @@ public class LibraryPanel extends JPanel implements LibraryObserver {
                     case "Autore": return book.getAuthor().toLowerCase().contains(testo);
                     case "Genere": return book.getGenre().toLowerCase().contains(testo);
                     case "Anno": return String.valueOf(book.getYear()).contains(testo);
+                    case "Rating": return String.valueOf(book.getRating().getValue()).contains(testo);
+                    case "Stato": return book.getStatus().getName().toLowerCase().contains(testo);
                     default: return book.getTitle().toLowerCase().contains(testo)
                             || book.getAuthor().toLowerCase().contains(testo)
                             || book.getGenre().toLowerCase().contains(testo)
@@ -184,6 +191,9 @@ public class LibraryPanel extends JPanel implements LibraryObserver {
                 break;
             case "Anno":
                 controller.sortBooks(new SortByYear());
+                break;
+            case "Rating":
+                controller.sortBooks(new SortByRating());
                 break;
             default:
                 break;

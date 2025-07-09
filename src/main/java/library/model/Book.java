@@ -1,5 +1,8 @@
 package main.java.library.model;
 
+import main.java.library.model.enums.Rating;
+import main.java.library.model.enums.ReadingStatus;
+
 import java.util.Objects;
 
 public class Book {
@@ -10,13 +13,17 @@ public class Book {
     private int year;
     private String isbn;
     private String description;
+    private Rating rating;
+    private ReadingStatus status;
 
-     Book(String title, String author, String genre, int year, String isbn, String description){
+     Book(String title, String author, String genre, int year, String isbn, Rating rating, ReadingStatus status, String description){
         this.title = title;
         this.author = author;
         this.genre = genre;
         this.year = year;
         this.isbn = isbn;
+        this.rating = rating;
+        this.status = status;
         this.description = description;
     }
 
@@ -67,6 +74,14 @@ public class Book {
     public void setIsbn(String isbn) {
         this.isbn = isbn;
     }
+
+    public Rating getRating() {return rating;}
+
+    public void setRating(Rating rating) {this.rating = rating;}
+
+    public ReadingStatus getStatus() {return status;}
+
+    public void setStatus(ReadingStatus s) {this.status = s;}
 
     public String getDescription() {
         return description;
