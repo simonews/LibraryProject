@@ -21,7 +21,10 @@ public class LibraryController {
 
     public boolean addBook(Book book){
         boolean result = library.addBook(book);
-        if (result) autoSave();
+        if (!result) {
+            throw new IllegalArgumentException("Esiste già un libro con questo ISBN.");
+        }
+        autoSave();
         return result;
 
     }

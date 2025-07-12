@@ -95,14 +95,15 @@ public class BookFormDialog extends JDialog {
                     return;
                 }
 
+
                 int yearInt;
                 try{
                     yearInt = Integer.parseInt(year);
-                    if (yearInt < 1000 || yearInt > 2100) {
+                    if (yearInt < 1 || yearInt > 2100) {
                         throw new NumberFormatException("Anno fuori range.");
                     }
                     }catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(this, "Anno non valido. Inserire un numero tra 2025 e 2100", "Errore." ,JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Anno non valido. Inserire un numero tra 1 e 2100", "Errore." ,JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 

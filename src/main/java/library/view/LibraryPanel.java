@@ -130,7 +130,14 @@ public class LibraryPanel extends JPanel implements LibraryObserver {
             dialog.setVisible(true);
             Book newBook = dialog.getBook();
             if (newBook != null) {
-                controller.addBook(newBook);
+                try{
+                    controller.addBook(newBook);
+                } catch (IllegalArgumentException ex) {
+                    JOptionPane.showMessageDialog(this,
+                            "ISBN già presente in libreria: impossibile aggiungere il libro.",
+                            "ISBN duplicato",
+                            JOptionPane.WARNING_MESSAGE);
+                }
             }
         });
 
