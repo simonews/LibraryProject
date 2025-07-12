@@ -24,43 +24,59 @@ public class LibraryPanel extends JPanel implements LibraryObserver {
     private JComboBox<String> filterCritComboBox;
     private JComboBox<String> sortComboBox;
 
-    public LibraryPanel(LibraryController controller){
+    public LibraryPanel(LibraryController controller) {
         this.controller = controller;
         setLayout(new BorderLayout());
+        setBackground(Color.DARK_GRAY);
 
         //colonne
-        String[] columnNames = {"Titolo", "Autore", "Genere", "Anno", "ISBN","Rating","Stato","Descrizione"};
+        String[] columnNames = {"Titolo", "Autore", "Genere", "Anno", "ISBN", "Rating", "Stato", "Descrizione"};
         tableModel = new DefaultTableModel(columnNames, 0);
         table = new JTable(tableModel);
+        table.setFillsViewportHeight(true);
+        table.setRowHeight(25);
+        table.setFont(new Font("SanSerif", Font.PLAIN, 14));
+        table.setGridColor(Color.GRAY);
+        table.setBackground(new Color(244,240,240));
+
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
 
         //filtri, ricerca e ordinamento
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        topPanel.setBackground(Color.DARK_GRAY);
 
         searchField = new JTextField(20);
-        filterCritComboBox = new JComboBox<>((new String[]{"Tutti", "Titolo", "Autore", "Genere","Rating","Stato","Anno"}));
-        sortComboBox = new JComboBox<>(new String[]{"Nessuno", "Titolo", "Autore", "Anno","Rating"});
+        filterCritComboBox = new JComboBox<>((new String[]{"Tutti", "Titolo", "Autore", "Genere", "Rating", "Stato", "Anno"}));
+        sortComboBox = new JComboBox<>(new String[]{"Nessuno", "Titolo", "Autore", "Anno", "Rating"});
 
-        topPanel.add(new JLabel("Cerca:"));
+        topPanel.add(new JLabel("Cerca:")).setForeground(Color.WHITE);
         topPanel.add(searchField);
-        topPanel.add(new JLabel("Filtra per:"));
+        topPanel.add(new JLabel("Filtra per:")).setForeground(Color.WHITE);
         topPanel.add(filterCritComboBox);
-        topPanel.add(new JLabel("Ordina per:"));
+        topPanel.add(new JLabel("Ordina per:")).setForeground(Color.WHITE);
         topPanel.add(sortComboBox);
 
-        filterCritComboBox.addActionListener(e -> filtra());
+
 
         add(topPanel, BorderLayout.NORTH);
 
 
-
         //pannello pulsanti add/edit/delete
         JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.setBackground(Color.DARK_GRAY);
 
         JButton addButton = new JButton("Aggiungi");
+        addButton.setBackground(new Color(46,204,113));
+        addButton.setForeground(Color.WHITE);
+
         JButton editButton = new JButton("Modifica");
+        editButton.setBackground(new Color(52,152,219));
+        editButton.setForeground(Color.WHITE);
+
         JButton deleteButton = new JButton("Rimuovi");
+        deleteButton.setBackground(new Color(231,76,60));
+        deleteButton.setForeground(Color.WHITE);
 
         buttonPanel.add(addButton);
         buttonPanel.add(editButton);
@@ -71,52 +87,20 @@ public class LibraryPanel extends JPanel implements LibraryObserver {
 
         //listener filtro/ricerca
         searchField.getDocument().addDocumentListener(new DocumentListener() {
-            public void insertUpdate(DocumentEvent e) { filtra();}
-            public void removeUpdate(DocumentEvent e) { filtra();}
-            public void changedUpdate(DocumentEvent e) { filtra();}
-        });
+            public void insertUpdate(DocumentEvent e) {
+                filtra();
+            }
 
-        //aggiunta
-        addButton.addActionListener(e -> {
-            BookFormDialog dialog = new BookFormDialog(null);
-            dialog.setVisible(true);
-            Book newBook = dialog.getBook();
-            if (newBook != null) {
-                controller.addBook(newBook);
+            public void removeUpdate(DocumentEvent e) {
+                filtra();
+            }
+
+            public void changedUpdate(DocumentEvent e) {
+                filtra();
             }
         });
 
-        //modifica
-        editButton.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
-            if (selectedRow >=0 ){
-                String isbn = (String) tableModel.getValueAt(selectedRow, 4);
-                Book existingBook = controller.getBookByISBN(isbn);
-                BookFormDialog dialog = new BookFormDialog(existingBook);
-                dialog.setVisible(true);
-                Book updatedBook = dialog.getBook();
-                if (updatedBook != null){
-                    controller.updateBook(existingBook.getId(), updatedBook);
-                }
-            }
-            else {
-                JOptionPane.showMessageDialog(this, "Seleziona un libro da modificare");
-            }
-        });
-
-        //Rimozione
-        deleteButton.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
-            if (selectedRow >= 0) {
-                String isbn = (String) tableModel.getValueAt(selectedRow, 4);
-                int result = JOptionPane.showConfirmDialog(this, "Sei sicuro di voler rimuovere il libro?", "Conferma", JOptionPane.YES_NO_OPTION);
-                if (result == JOptionPane.YES_OPTION) {
-                    controller.removeBookByIsbn(isbn);
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "Seleziona un libro da rimuovere.");
-            }
-        });
+        filterCritComboBox.addActionListener(e -> filtra());
 
         sortComboBox.addActionListener(e -> {
             String criterio = (String) sortComboBox.getSelectedItem();
@@ -139,20 +123,62 @@ public class LibraryPanel extends JPanel implements LibraryObserver {
 
             filtra();
         });
+
+        //aggiunta
+        addButton.addActionListener(e -> {
+            BookFormDialog dialog = new BookFormDialog(null);
+            dialog.setVisible(true);
+            Book newBook = dialog.getBook();
+            if (newBook != null) {
+                controller.addBook(newBook);
+            }
+        });
+
+        //modifica
+        editButton.addActionListener(e -> {
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow >= 0) {
+                String isbn = (String) tableModel.getValueAt(selectedRow, 4);
+                Book existingBook = controller.getBookByISBN(isbn);
+                BookFormDialog dialog = new BookFormDialog(existingBook);
+                dialog.setVisible(true);
+                Book updatedBook = dialog.getBook();
+                if (updatedBook != null) {
+                    controller.updateBook(existingBook.getId(), updatedBook);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Seleziona un libro da modificare");
+            }
+        });
+
+        //Rimozione
+        deleteButton.addActionListener(e -> {
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow >= 0) {
+                String isbn = (String) tableModel.getValueAt(selectedRow, 4);
+                int result = JOptionPane.showConfirmDialog(this, "Sei sicuro di voler rimuovere il libro?", "Conferma", JOptionPane.YES_NO_OPTION);
+                if (result == JOptionPane.YES_OPTION) {
+                    controller.removeBookByIsbn(isbn);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Seleziona un libro da rimuovere.");
+            }
+        });
+
     }
 
-    public void refreshTable(List<Book> books){
+    public void refreshTable(List<Book> books) {
         tableModel.setRowCount(0);
-        for (Book b:books){
+        for (Book b : books) {
             tableModel.addRow(new Object[]{
-                b.getTitle(),
-                b.getAuthor(),
-                b.getGenre(),
-                b.getYear(),
-                b.getIsbn(),
-                b.getRating().getValue() + " " + "★".repeat(b.getRating().getValue()),
-                b.getStatus().getName(),
-                b.getDescription()
+                    b.getTitle(),
+                    b.getAuthor(),
+                    b.getGenre(),
+                    b.getYear(),
+                    b.getIsbn(),
+                    b.getRating().getValue() + " " + "★".repeat(b.getRating().getValue()),
+                    b.getStatus().getName(),
+                    b.getDescription()
             });
         }
     }
@@ -167,16 +193,23 @@ public class LibraryPanel extends JPanel implements LibraryObserver {
         if (!testo.isEmpty()) {
             filtrati = filtrati.stream().filter(book -> {
                 switch (criterioFiltro) {
-                    case "Titolo": return book.getTitle().toLowerCase().contains(testo);
-                    case "Autore": return book.getAuthor().toLowerCase().contains(testo);
-                    case "Genere": return book.getGenre().toLowerCase().contains(testo);
-                    case "Anno": return String.valueOf(book.getYear()).contains(testo);
-                    case "Rating": return String.valueOf(book.getRating().getValue()).contains(testo);
-                    case "Stato": return book.getStatus().getName().toLowerCase().contains(testo);
-                    default: return book.getTitle().toLowerCase().contains(testo)
-                            || book.getAuthor().toLowerCase().contains(testo)
-                            || book.getGenre().toLowerCase().contains(testo)
-                            || String.valueOf(book.getYear()).contains(testo);
+                    case "Titolo":
+                        return book.getTitle().toLowerCase().contains(testo);
+                    case "Autore":
+                        return book.getAuthor().toLowerCase().contains(testo);
+                    case "Genere":
+                        return book.getGenre().toLowerCase().contains(testo);
+                    case "Anno":
+                        return String.valueOf(book.getYear()).contains(testo);
+                    case "Rating":
+                        return String.valueOf(book.getRating().getValue()).contains(testo);
+                    case "Stato":
+                        return book.getStatus().getName().toLowerCase().contains(testo);
+                    default:
+                        return book.getTitle().toLowerCase().contains(testo)
+                                || book.getAuthor().toLowerCase().contains(testo)
+                                || book.getGenre().toLowerCase().contains(testo)
+                                || String.valueOf(book.getYear()).contains(testo);
                 }
             }).collect(Collectors.toList());
         }

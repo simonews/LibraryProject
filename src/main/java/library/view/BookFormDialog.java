@@ -25,16 +25,37 @@ public class BookFormDialog extends JDialog {
         setSize(400, 400);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
+        getContentPane().setBackground(Color.DARK_GRAY);
 
         JPanel inputPanel = new JPanel(new GridLayout(8,2,5,5));
+        inputPanel.setBackground(Color.DARK_GRAY);
+
         titleField= new JTextField();
+        titleField.setBackground(Color.LIGHT_GRAY);
+        titleField.setForeground(Color.BLACK);
+
         authorField = new JTextField();
+        authorField.setBackground(Color.LIGHT_GRAY);
+        authorField.setForeground(Color.BLACK);
+
         genreField = new JTextField();
+        genreField.setBackground(Color.LIGHT_GRAY);
+        genreField.setForeground(Color.BLACK);
+
         yearField = new JTextField();
+        yearField.setBackground(Color.LIGHT_GRAY);
+        yearField.setForeground(Color.BLACK);
+
         isbnField = new JTextField();
+        isbnField.setBackground(Color.LIGHT_GRAY);
+        isbnField.setForeground(Color.BLACK);
+
         ratingField = new JComboBox<>(Rating.values());
         statusField = new JComboBox<>(ReadingStatus.values());
+
         descriptionArea = new JTextArea();
+        descriptionArea.setBackground(Color.LIGHT_GRAY);
+        descriptionArea.setForeground(Color.BLACK);
 
         inputPanel.add(new JLabel("Titolo: "));
         inputPanel.add(titleField);
@@ -57,6 +78,8 @@ public class BookFormDialog extends JDialog {
 
         //bottoni
         JButton confirmButton = new JButton("Conferma");
+        confirmButton.setBackground(new Color(52, 152, 219));
+        confirmButton.setForeground(Color.WHITE);
         confirmButton.addActionListener(e -> {
                 String title = titleField.getText().trim();
                 String author = authorField.getText().trim();
@@ -75,7 +98,7 @@ public class BookFormDialog extends JDialog {
                 int yearInt;
                 try{
                     yearInt = Integer.parseInt(year);
-                    if (yearInt < 2025 || yearInt > 2100) {
+                    if (yearInt < 1000 || yearInt > 2100) {
                         throw new NumberFormatException("Anno fuori range.");
                     }
                     }catch (NumberFormatException ex) {
@@ -88,6 +111,7 @@ public class BookFormDialog extends JDialog {
         });
 
         JPanel buttonPanel = new JPanel();
+        buttonPanel.setBackground(Color.DARK_GRAY);
         buttonPanel.add(confirmButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
